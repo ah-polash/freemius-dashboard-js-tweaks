@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>bPlugins portal promo preview</title>
+<meta name="robots" content="noindex">
+<style>
+  /* A rough stand-in for the Freemius Customer Portal layout so promo.js can be
+     previewed without logging in. Element ids match the real portal. */
+  :root{
+    --fs-ds-theme-primary:#6753ff;
+    --fs-ds-theme-background:#f0f0fa;
+    --fs-ds-theme-foreground:#54545f;
+    --fs-ds-theme-primary-text:#0e0e0e;
+    --fs-ds-typography-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --fs-ds-appearance-border-radius:5px;
+  }
+  html,body{height:100%;margin:0}
+  body{font-family:var(--fs-ds-typography-font-family);color:var(--fs-ds-theme-foreground);background:var(--fs-ds-theme-background);font-size:14px}
+  app-root{display:block;height:100%}
+  #app_container{position:relative;display:flex;flex-flow:column wrap;height:100%;width:100%;box-sizing:border-box;background:var(--fs-ds-theme-background);padding-top:0;transition:padding-top .3s ease-in-out}
+  #app_container>.row{display:flex;flex:1 1 auto;min-height:0}
+  .mat-sidenav-container{display:flex;flex:1 1 0%;margin:30px 30px 0;min-height:0}
+  #sidenav_left{width:240px;flex:0 0 240px;margin-right:30px;background:#fff;border-radius:5px;padding:18px 0;align-self:flex-start}
+  .store{display:flex;align-items:center;gap:10px;padding:0 18px 16px;border-bottom:1px solid #f0f0fa;margin-bottom:8px}
+  .store-icon{width:34px;height:34px;border-radius:8px;background:#146ef5;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .store b{display:block;color:var(--fs-ds-theme-primary-text)}
+  .store small{color:#94949c}
+  .menu a{display:block;padding:10px 18px;color:#54545f;text-decoration:none}
+  .menu a.active{color:var(--fs-ds-theme-primary);background:#f0f0fa;border-right:3px solid var(--fs-ds-theme-primary)}
+  #main_content_container{flex:1 1 0%;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+  .mat-toolbar{margin:0 0 10px;flex:0 0 auto}
+  .mat-toolbar-row{display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 30px;background:#fff;border-radius:5px}
+  .mat-toolbar-row h1{font-size:20px;font-weight:500;margin:0;color:var(--fs-ds-theme-primary-text)}
+  .profile-avatar{width:36px;height:36px;border-radius:50%;background:#e4e4f0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#54545f}
+  #main_content{flex:1 1 auto;overflow:auto;min-height:0}
+  .content-card{background:#fff;border-radius:5px;padding:24px 30px;margin-bottom:30px}
+  .content-card h2{margin:0 0 16px;font-size:18px;color:var(--fs-ds-theme-primary-text);font-weight:600}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid rgba(14,14,14,.12);font-size:13px}
+  th{color:#94949c;font-weight:600;font-size:12px}
+  .chip{display:inline-block;padding:3px 9px;border-radius:12px;background:#b7ffe1;color:#0e0e0e;font-size:12px;font-weight:600}
+  .chip.pending{background:#ffe896}
+  #footer{flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#fff;font-size:13px;color:#4f4f4f;margin-top:auto}
+  #footer a{color:#4f4f4f}
+  .login #sidenav_left,.login .mat-toolbar{display:none}
+  .login #main_content{display:flex;align-items:center;justify-content:center}
+  .login .content-card{width:420px;max-width:100%;text-align:center}
+  .login .content-card input{display:block;width:100%;box-sizing:border-box;margin:10px 0;padding:12px 10px;border:0;border-bottom:1px solid #c6c6d0;font:inherit}
+  .login .btn{display:block;width:100%;padding:12px;border:0;border-radius:5px;background:var(--fs-ds-theme-primary);color:#fff;font:inherit;font-weight:600;margin-top:16px}
+
+  /* Preview controls (not part of the portal) */
+  #preview-tools{position:fixed;right:14px;bottom:14px;z-index:50;background:#070127;color:#fff;border-radius:10px;padding:12px 14px;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:280px}
+  #preview-tools b{display:block;margin-bottom:6px;font-size:12px}
+  #preview-tools button,#preview-tools a{display:inline-block;margin:4px 4px 0 0;padding:6px 9px;border:0;border-radius:6px;background:#146ef5;color:#fff;font:inherit;cursor:pointer;text-decoration:none}
+  #preview-tools button.alt{background:rgba(255,255,255,.14)}
+  #preview-tools code{display:block;margin-top:8px;padding:6px;background:rgba(255,255,255,.1);border-radius:6px;word-break:break-all;font-size:11px}
+  @media (max-width:959px){.mat-sidenav-container{margin:20px 20px 0;flex-direction:column}#sidenav_left{width:auto;flex:0 0 auto;margin:0 0 20px}.mat-toolbar-row{padding:0 10px 0 10px}}
+  @media (max-width:599px){#preview-tools{display:none}}
+</style>
+</head>
+<body>
+<app-root>
+  <div id="app_container" class="dashboard">
+    <div class="row">
+      <div class="mat-sidenav-container">
+        <nav id="sidenav_left" class="mat-drawer mat-sidenav">
+          <div class="store">
+            <div class="store-icon">b</div>
+            <div><b>bPlugins</b><small>bplugins.com</small></div>
+          </div>
+          <div class="menu">
+            <a class="active" href="#">Products</a>
+            <a href="#">Subscriptions</a>
+            <a href="#">Payments</a>
+            <a href="#">Licenses</a>
+            <a href="#">Sites</a>
+            <a href="#">Profile</a>
+          </div>
+        </nav>
+        <div id="main_content_container" class="mat-drawer-content mat-sidenav-content">
+          <div class="mat-toolbar">
+            <div class="mat-toolbar-row">
+              <h1>Products</h1>
+              <div class="profile-avatar">H</div>
+            </div>
+          </div>
+          <main id="main_content">
+            <div class="content-card">
+              <h2>Your products</h2>
+              <table>
+                <thead><tr><th>Product</th><th>Plan</th><th>License</th><th>Status</th><th>Renews</th></tr></thead>
+                <tbody>
+                  <tr><td>HTML5 Video Player</td><td>Pro, 5 sites</td><td>sk_••••••••3f9a</td><td><span class="chip">Active</span></td><td>Jan 14, 2027</td></tr>
+                  <tr><td>PDF Poster</td><td>Pro, 1 site</td><td>sk_••••••••1c2d</td><td><span class="chip">Active</span></td><td>Nov 2, 2026</td></tr>
+                  <tr><td>3D Viewer</td><td>Pro, 1 site</td><td>sk_••••••••8b77</td><td><span class="chip pending">Expires soon</span></td><td>Oct 21, 2026</td></tr>
+                  <tr><td>Advanced Post Block</td><td>Lifetime, 3 sites</td><td>sk_••••••••0e41</td><td><span class="chip">Active</span></td><td>Never</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="content-card login-card" hidden>
+              <h2>Customer Portal</h2>
+              <p>Your hub for billing, subscriptions, license keys, downloads, and invoice management.</p>
+              <input type="email" placeholder="Email address">
+              <input type="password" placeholder="Password">
+              <button class="btn" type="button">Sign in →</button>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div id="footer"><span>Powered by <b>Freemius</b> – a trusted reseller of bPlugins products</span><span><a href="#">Terms of Service</a> &nbsp; <a href="#">Privacy</a></span></div>
+  </div>
+</app-root>
+
+<div id="preview-tools">
+  <b>Preview controls</b>
+  <button type="button" onclick="bplPortalPromo.reset()">Show again</button>
+  <button type="button" class="alt" onclick="toggleLogin()">Toggle login view</button>
+  <a class="alt" href="?ends=2099-12-31T23:59:59">Future end date</a>
+  <a class="alt" href="?ends=2000-01-01T00:00:00">Expired</a>
+  <code id="pages-url"></code>
+</div>
+
+<script>
+  // Query string overrides for testing: ?ends=2026-12-31T23:59:59&starts=...
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var o = {};
+    if (q.get('ends')) o.endsAt = q.get('ends');
+    if (q.get('starts')) o.startsAt = q.get('starts');
+    if (q.get('campaign')) o.campaignId = q.get('campaign');
+    if (Object.keys(o).length) window.BPL_PORTAL_PROMO_CONFIG = o;
+    document.getElementById('pages-url').textContent = location.origin + location.pathname.replace(/[^/]*$/, '') + 'promo.js';
+  })();
+  function toggleLogin() {
+    var c = document.getElementById('app_container');
+    var login = c.classList.toggle('login');
+    document.querySelector('.login-card').hidden = !login;
+    document.querySelectorAll('.content-card:not(.login-card)').forEach(function (n) { n.hidden = login; });
+  }
+</script>
+<script src="promo.js"></script>
+</body>
+</html>
